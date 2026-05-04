@@ -2,10 +2,10 @@
 
 Portable C++11 Logical Link Control sub-layer codec for DLMS/COSEM.
 
-This repository contains the LLC codec plan for a future DLMS/COSEM framework.
-The framework is planned to include HDLC, LLC, WRAPPER and APDU codecs, but this
-repository phase focuses on the LLC layer used by the 3-layer, connection-oriented
-HDLC based communication profile.
+This repository contains the LLC codec for a DLMS/COSEM framework. The framework
+is expected to include HDLC, LLC, WRAPPER and APDU codecs, while this repository
+focuses on the LLC layer used by the 3-layer, connection-oriented HDLC based
+communication profile.
 
 ## Scope
 
@@ -168,7 +168,7 @@ I-LAST-FRAGMENT:
 
 ## Repository Layout
 
-Planned layout:
+Current layout:
 
 ```text
 .
@@ -180,19 +180,22 @@ Planned layout:
 │           ├── llc_error.hpp
 │           ├── llc_header.hpp
 │           ├── llc_codec.hpp
-│           └── llc_c_api.h
+│           ├── llc_c_api.h
+│           └── llc_skeleton.hpp
 ├── src/
 │   └── llc/
 │       ├── llc_header.cpp
 │       ├── llc_codec.cpp
-│       └── llc_c_api.cpp
+│       ├── llc_c_api.cpp
+│       └── llc_skeleton.cpp
 ├── test/
 │   ├── CMakeLists.txt
 │   └── llc/
 │       ├── test_llc_header.cpp
 │       ├── test_llc_codec.cpp
 │       ├── test_llc_c_api.cpp
-│       └── test_llc_vectors.cpp
+│       ├── test_llc_c_header.c
+│       └── test_llc_skeleton.cpp
 └── docs/
     ├── 00_llc_requirements.md
     ├── 01_llc_codec_api.md
@@ -235,7 +238,7 @@ C:\msys\usr\bin\bash.exe -lc 'export PATH=/mingw64/bin:/usr/bin:$PATH; cmake -S 
 
 ## CMake Options
 
-Planned options:
+CMake options:
 
 ```text
 DLMS_BUILD_TESTS       Build GoogleTest tests
@@ -417,7 +420,7 @@ Documentation and requirements.
 Current status:
 
 ```text
-In progress
+Completed
 ```
 
 Documents:
@@ -464,13 +467,9 @@ Stable C ABI.
 
 ### Phase 7
 
-Real DLMS/COSEM vectors.
-
-### Phase 8
-
 Root integration tests with `dlms-hdlc`.
 
-### Phase 9
+### Phase 8
 
 Doxygen public API documentation.
 
