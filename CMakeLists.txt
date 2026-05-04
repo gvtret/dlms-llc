@@ -9,6 +9,7 @@ option(DLMS_BUILD_C_API "Build stable C ABI wrapper" ON)
 option(DLMS_USE_SYSTEM_GTEST "Use system-installed GoogleTest" OFF)
 
 add_library(dlms_llc
+  src/llc/llc_header.cpp
   src/llc/llc_skeleton.cpp)
 
 target_compile_features(dlms_llc PUBLIC cxx_std_11)

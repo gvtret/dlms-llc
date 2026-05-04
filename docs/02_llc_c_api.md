@@ -11,8 +11,9 @@ Rules:
 - Fixed-width integer types.
 - Caller-provided buffers.
 - Status codes only.
-- Stable enum values.
 - No exceptions crossing the C ABI.
+- The C ABI maps status names explicitly and must not depend on the C++
+  `LlcStatus` declaration order.
 
 ## 2. Header
 
@@ -33,25 +34,27 @@ src/llc/llc_c_api.cpp
 ```c
 typedef enum dlms_llc_status_t
 {
-  DLMS_LLC_STATUS_OK = 0,
-  DLMS_LLC_STATUS_NEED_MORE_DATA = 1,
-  DLMS_LLC_STATUS_OUTPUT_BUFFER_TOO_SMALL = 2,
-  DLMS_LLC_STATUS_INVALID_ARGUMENT = 3,
-  DLMS_LLC_STATUS_INVALID_HEADER = 4,
-  DLMS_LLC_STATUS_INVALID_DSAP = 5,
-  DLMS_LLC_STATUS_INVALID_SSAP = 6,
-  DLMS_LLC_STATUS_INVALID_CONTROL = 7,
-  DLMS_LLC_STATUS_INVALID_LPDU_LENGTH = 8,
-  DLMS_LLC_STATUS_LSDU_TOO_LARGE = 9,
-  DLMS_LLC_STATUS_BROADCAST_ENCODE_FORBIDDEN = 10,
-  DLMS_LLC_STATUS_UNSUPPORTED_ADDRESS = 11,
-  DLMS_LLC_STATUS_UNSUPPORTED_CONTROL = 12,
-  DLMS_LLC_STATUS_UNSUPPORTED_FEATURE = 13,
-  DLMS_LLC_STATUS_INTERNAL_ERROR = 14
+  DLMS_LLC_STATUS_OK,
+  DLMS_LLC_STATUS_NEED_MORE_DATA,
+  DLMS_LLC_STATUS_OUTPUT_BUFFER_TOO_SMALL,
+  DLMS_LLC_STATUS_INVALID_ARGUMENT,
+  DLMS_LLC_STATUS_INVALID_HEADER,
+  DLMS_LLC_STATUS_INVALID_DSAP,
+  DLMS_LLC_STATUS_INVALID_SSAP,
+  DLMS_LLC_STATUS_INVALID_CONTROL,
+  DLMS_LLC_STATUS_INVALID_LPDU_LENGTH,
+  DLMS_LLC_STATUS_LSDU_TOO_LARGE,
+  DLMS_LLC_STATUS_BROADCAST_ENCODE_FORBIDDEN,
+  DLMS_LLC_STATUS_UNSUPPORTED_ADDRESS,
+  DLMS_LLC_STATUS_UNSUPPORTED_CONTROL,
+  DLMS_LLC_STATUS_UNSUPPORTED_FEATURE,
+  DLMS_LLC_STATUS_INTERNAL_ERROR
 } dlms_llc_status_t;
 ```
 
-Enum values must remain stable after public release.
+Tests should verify that C API functions return the expected named status for
+each behavior. They must not mirror or assert the declaration order of the C++
+`LlcStatus` enum.
 
 ## 4. C Structs
 

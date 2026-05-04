@@ -7,13 +7,13 @@ namespace llc {
  * @brief Status codes returned by the LLC codec public API.
  *
  * Public/runtime API paths must return these status codes instead of throwing
- * exceptions. The numeric order is intentionally stable because the C ABI maps
- * to this model.
+ * exceptions. Callers must treat the enum names as the contract, not the
+ * underlying integer representation.
  */
 enum class LlcStatus
 {
   /// Operation completed successfully.
-  Ok = 0,
+  Ok,
 
   /// More input bytes are required to decode a complete LPDU.
   NeedMoreData,

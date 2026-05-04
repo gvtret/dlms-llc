@@ -29,7 +29,7 @@ static const std::size_t kLlcHeaderSize = 3;
 ```cpp
 enum class LlcStatus
 {
-  Ok = 0,
+  Ok,
 
   NeedMoreData,
   OutputBufferTooSmall,
@@ -51,6 +51,9 @@ enum class LlcStatus
   InternalError
 };
 ```
+
+`LlcStatus` is a named C++ status model. Its numeric values and declaration
+order are not part of the C++ API contract and must not be tested directly.
 
 ## 4. Header Model
 

@@ -210,7 +210,7 @@ dlms/
 ```cpp
 enum class LlcStatus
 {
-  Ok = 0,
+  Ok,
 
   NeedMoreData,
   OutputBufferTooSmall,
@@ -456,7 +456,7 @@ extern "C"
 никаких exceptions
 только fixed-width integer types
 caller-provided buffers
-стабильные enum values
+explicit status-name mapping, independent from C++ enum declaration order
 ```
 
 Пример:
@@ -464,19 +464,22 @@ caller-provided buffers
 ```c
 typedef enum dlms_llc_status_t
 {
-  DLMS_LLC_STATUS_OK = 0,
-  DLMS_LLC_STATUS_NEED_MORE_DATA = 1,
-  DLMS_LLC_STATUS_OUTPUT_BUFFER_TOO_SMALL = 2,
-  DLMS_LLC_STATUS_INVALID_ARGUMENT = 3,
-  DLMS_LLC_STATUS_INVALID_HEADER = 4,
-  DLMS_LLC_STATUS_INVALID_DSAP = 5,
-  DLMS_LLC_STATUS_INVALID_SSAP = 6,
-  DLMS_LLC_STATUS_INVALID_CONTROL = 7,
-  DLMS_LLC_STATUS_BROADCAST_ENCODE_FORBIDDEN = 8,
-  DLMS_LLC_STATUS_UNSUPPORTED_FEATURE = 9,
-  DLMS_LLC_STATUS_INTERNAL_ERROR = 10
+  DLMS_LLC_STATUS_OK,
+  DLMS_LLC_STATUS_NEED_MORE_DATA,
+  DLMS_LLC_STATUS_OUTPUT_BUFFER_TOO_SMALL,
+  DLMS_LLC_STATUS_INVALID_ARGUMENT,
+  DLMS_LLC_STATUS_INVALID_HEADER,
+  DLMS_LLC_STATUS_INVALID_DSAP,
+  DLMS_LLC_STATUS_INVALID_SSAP,
+  DLMS_LLC_STATUS_INVALID_CONTROL,
+  DLMS_LLC_STATUS_BROADCAST_ENCODE_FORBIDDEN,
+  DLMS_LLC_STATUS_UNSUPPORTED_FEATURE,
+  DLMS_LLC_STATUS_INTERNAL_ERROR
 } dlms_llc_status_t;
 ```
+
+Тесты C API должны проверять возвращаемые именованные статусы по поведению, а
+не порядок или числовые значения C++ `LlcStatus`.
 
 ```c
 dlms_llc_status_t dlms_llc_encode_request(

@@ -261,7 +261,7 @@ Example status model:
 ```cpp
 enum class LlcStatus
 {
-  Ok = 0,
+  Ok,
 
   NeedMoreData,
   OutputBufferTooSmall,
@@ -325,7 +325,7 @@ Rules:
 - fixed-width integer types
 - caller-provided buffers
 - status codes only
-- stable enum values
+- explicit status-name mapping, independent from C++ enum declaration order
 
 Example:
 
