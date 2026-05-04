@@ -92,6 +92,71 @@ LlcStatus EncodeLpdu(
   return LlcStatus::Ok;
 }
 
+LlcStatus DecodeLpduFromBuffer(
+  const std::uint8_t* input,
+  std::size_t inputSize,
+  bool allowBroadcastDestination,
+  LlcLpdu& lpdu)
+{
+  lpdu.header.dsap = 0;
+  lpdu.header.ssap = 0;
+  lpdu.header.control = 0;
+  lpdu.lsduData = 0;
+  lpdu.lsduSize = 0;
+
+  if (input == 0 && inputSize != 0) {
+    return LlcStatus::InvalidArgument;
+  }
+  if (inputSize < kLlcHeaderSize) {
+    return LlcStatus::NeedMoreData;
+  }
+
+  LlcHeader header;
+  header.dsap = input[0];
+  header.ssap = input[1];
+  header.control = input[2];
+
+  const LlcStatus headerStatus =
+    ValidateLlcHeader(header, allowBroadcastDestination);
+  if (headerStatus != LlcStatus::Ok) {
+    return headerStatus;
+  }
+
+  lpdu.header = header;
+  lpdu.lsduData = input + kLlcHeaderSize;
+  lpdu.lsduSize = inputSize - kLlcHeaderSize;
+  return LlcStatus::Ok;
+}
+
+LlcStatus DecodeLpdu(
+  const std::uint8_t* input,
+  std::size_t inputSize,
+  bool allowBroadcastDestination,
+  LlcLpduBuffer& lpdu)
+{
+  lpdu.header.dsap = 0;
+  lpdu.header.ssap = 0;
+  lpdu.header.control = 0;
+  lpdu.lsdu.clear();
+
+  LlcLpdu view;
+  const LlcStatus status =
+    DecodeLpduFromBuffer(input, inputSize, allowBroadcastDestination, view);
+  if (status != LlcStatus::Ok) {
+    return status;
+  }
+
+  try {
+    lpdu.lsdu.assign(view.lsduData, view.lsduData + view.lsduSize);
+  } catch (const std::bad_alloc&) {
+    lpdu.lsdu.clear();
+    return LlcStatus::InternalError;
+  }
+
+  lpdu.header = view.header;
+  return LlcStatus::Ok;
+}
+
 LlcStatus EncodeDlmsRequest(
   const std::uint8_t* apdu,
   std::size_t apduSize,

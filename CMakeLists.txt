@@ -19,7 +19,7 @@ target_include_directories(dlms_llc
   PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-set(DLMS_LLC_HAS_CODEC_API OFF CACHE INTERNAL
+set(DLMS_LLC_HAS_CODEC_API ON CACHE INTERNAL
   "dlms-llc exposes the codec API required by root integration tests")
 
 if(DLMS_BUILD_TESTS)

@@ -14,6 +14,8 @@ using dlms::llc::EncodeDlmsRequest;
 using dlms::llc::EncodeDlmsResponse;
 using dlms::llc::EncodeLpdu;
 using dlms::llc::EncodeLpduToBuffer;
+using dlms::llc::DecodeLpdu;
+using dlms::llc::DecodeLpduFromBuffer;
 using dlms::llc::kLlcControlDefault;
 using dlms::llc::kLlcDsapBroadcast;
 using dlms::llc::kLlcDsapDlms;
@@ -21,6 +23,8 @@ using dlms::llc::kLlcHeaderSize;
 using dlms::llc::kLlcSsapClient;
 using dlms::llc::kLlcSsapServer;
 using dlms::llc::LlcHeader;
+using dlms::llc::LlcLpdu;
+using dlms::llc::LlcLpduBuffer;
 using dlms::llc::LlcStatus;
 
 TEST(LlcCodecTest, EncodesDlmsRequest)
@@ -158,6 +162,100 @@ TEST(LlcCodecTest, DoesNotModifyInputApdu)
   EXPECT_EQ(LlcStatus::Ok, EncodeDlmsRequest(apdu, sizeof(apdu), output));
 
   EXPECT_EQ(before, std::vector<std::uint8_t>(apdu, apdu + sizeof(apdu)));
+}
+
+TEST(LlcCodecTest, DecodesValidLpduAsView)
+{
+  const std::uint8_t lpduBytes[] = {
+    kLlcDsapDlms,
+    kLlcSsapClient,
+    kLlcControlDefault,
+    0xC0,
+    0x01
+  };
+
+  LlcLpdu lpdu;
+  EXPECT_EQ(LlcStatus::Ok,
+            DecodeLpduFromBuffer(
+              lpduBytes, sizeof(lpduBytes), false, lpdu));
+
+  EXPECT_EQ(kLlcDsapDlms, lpdu.header.dsap);
+  EXPECT_EQ(kLlcSsapClient, lpdu.header.ssap);
+  EXPECT_EQ(kLlcControlDefault, lpdu.header.control);
+  EXPECT_EQ(lpduBytes + kLlcHeaderSize, lpdu.lsduData);
+  EXPECT_EQ(2u, lpdu.lsduSize);
+}
+
+TEST(LlcCodecTest, DecodesValidLpduIntoOwnedBuffer)
+{
+  const std::uint8_t lpduBytes[] = {
+    kLlcDsapDlms,
+    kLlcSsapServer,
+    kLlcControlDefault,
+    0xC4,
+    0x01,
+    0x09
+  };
+
+  LlcLpduBuffer lpdu;
+  EXPECT_EQ(LlcStatus::Ok,
+            DecodeLpdu(lpduBytes, sizeof(lpduBytes), false, lpdu));
+
+  EXPECT_EQ(kLlcDsapDlms, lpdu.header.dsap);
+  EXPECT_EQ(kLlcSsapServer, lpdu.header.ssap);
+  const std::uint8_t expectedLsdu[] = {0xC4, 0x01, 0x09};
+  EXPECT_EQ(std::vector<std::uint8_t>(
+              expectedLsdu, expectedLsdu + sizeof(expectedLsdu)),
+            lpdu.lsdu);
+}
+
+TEST(LlcCodecTest, DecodeReportsNeedMoreDataForShortInput)
+{
+  const std::uint8_t shortLpdu[] = {kLlcDsapDlms, kLlcSsapClient};
+
+  LlcLpdu lpdu;
+  EXPECT_EQ(LlcStatus::NeedMoreData,
+            DecodeLpduFromBuffer(shortLpdu, sizeof(shortLpdu), false, lpdu));
+}
+
+TEST(LlcCodecTest, DecodeRejectsInvalidHeader)
+{
+  const std::uint8_t lpduBytes[] = {
+    0x01,
+    kLlcSsapClient,
+    kLlcControlDefault,
+    0xC0
+  };
+
+  LlcLpdu lpdu;
+  EXPECT_EQ(LlcStatus::InvalidDsap,
+            DecodeLpduFromBuffer(
+              lpduBytes, sizeof(lpduBytes), false, lpdu));
+}
+
+TEST(LlcCodecTest, DecodeBroadcastDestinationRequiresExplicitPolicy)
+{
+  const std::uint8_t lpduBytes[] = {
+    kLlcDsapBroadcast,
+    kLlcSsapClient,
+    kLlcControlDefault,
+    0xC0
+  };
+
+  LlcLpdu lpdu;
+  EXPECT_EQ(LlcStatus::BroadcastEncodeForbidden,
+            DecodeLpduFromBuffer(
+              lpduBytes, sizeof(lpduBytes), false, lpdu));
+  EXPECT_EQ(LlcStatus::Ok,
+            DecodeLpduFromBuffer(
+              lpduBytes, sizeof(lpduBytes), true, lpdu));
+}
+
+TEST(LlcCodecTest, DecodeRejectsNullInputWithNonZeroSize)
+{
+  LlcLpdu lpdu;
+  EXPECT_EQ(LlcStatus::InvalidArgument,
+            DecodeLpduFromBuffer(0, kLlcHeaderSize, false, lpdu));
 }
 
 } // namespace
