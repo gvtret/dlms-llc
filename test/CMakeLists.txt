@@ -10,6 +10,7 @@ else()
 endif()
 
 add_executable(dlms_llc_tests
+  llc/test_llc_codec.cpp
   llc/test_llc_header.cpp
   llc/test_llc_skeleton.cpp)
 
