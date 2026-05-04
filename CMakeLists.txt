@@ -13,6 +13,12 @@ add_library(dlms_llc
   src/llc/llc_header.cpp
   src/llc/llc_skeleton.cpp)
 
+if(DLMS_BUILD_C_API)
+  target_sources(dlms_llc
+    PRIVATE
+      src/llc/llc_c_api.cpp)
+endif()
+
 target_compile_features(dlms_llc PUBLIC cxx_std_11)
 
 target_include_directories(dlms_llc
