@@ -180,14 +180,12 @@ Current layout:
 │           ├── llc_error.hpp
 │           ├── llc_header.hpp
 │           ├── llc_codec.hpp
-│           ├── llc_c_api.h
-│           └── llc_skeleton.hpp
+│           └── llc_c_api.h
 ├── src/
 │   └── llc/
 │       ├── llc_header.cpp
 │       ├── llc_codec.cpp
-│       ├── llc_c_api.cpp
-│       └── llc_skeleton.cpp
+│       └── llc_c_api.cpp
 ├── test/
 │   ├── CMakeLists.txt
 │   └── llc/
@@ -195,7 +193,7 @@ Current layout:
 │       ├── test_llc_codec.cpp
 │       ├── test_llc_c_api.cpp
 │       ├── test_llc_c_header.c
-│       └── test_llc_skeleton.cpp
+│       └── test_llc_vectors.cpp
 └── docs/
     ├── 00_llc_requirements.md
     ├── 01_llc_codec_api.md

@@ -10,8 +10,7 @@ option(DLMS_USE_SYSTEM_GTEST "Use system-installed GoogleTest" OFF)
 
 add_library(dlms_llc
   src/llc/llc_codec.cpp
-  src/llc/llc_header.cpp
-  src/llc/llc_skeleton.cpp)
+  src/llc/llc_header.cpp)
 
 if(DLMS_BUILD_C_API)
   target_sources(dlms_llc
