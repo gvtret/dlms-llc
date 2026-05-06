@@ -434,7 +434,7 @@ docs/04_llc_test_plan.md
 
 ### Phase 1
 
-Project skeleton:
+Initial project structure:
 
 - CMake root project
 - include tree

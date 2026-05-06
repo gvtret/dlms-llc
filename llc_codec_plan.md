@@ -830,9 +830,9 @@ security/ciphering
 3. docs/02_llc_c_api.md
 4. docs/03_llc_segmentation_boundary.md
 5. docs/04_llc_test_plan.md
-6. CMake skeleton
+6. CMake project structure
 7. empty library target
-8. GoogleTest skeleton
+8. GoogleTest harness
 9. LlcStatus
 10. LlcHeader constants and validation
 ```
